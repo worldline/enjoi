@@ -292,6 +292,28 @@ Test('types', function (t) {
         });
     });
 
+    t.test('string empty', function (t) {
+        t.plan(2);
+
+        var schemaAllowingEmpty = Enjoi({
+            'type': 'string',
+            'allowEmptyValue': true
+        });
+
+        Joi.validate('', schemaAllowingEmpty, function (error, value) {
+            t.ok(!error,  "Empty string allowed");
+        });
+
+        var defaultStringSchema = Enjoi({
+            'type': 'string'
+        });
+
+        Joi.validate('', defaultStringSchema, function (error, value) {
+            t.ok(error,  "Empty string disallowed");
+        });
+
+    });
+
     t.test('string email', function (t) {
         t.plan(2);
 
@@ -309,10 +331,10 @@ Test('types', function (t) {
             t.ok(!error,  "good email.");
         });
 
-       
+
     });
-    
-     t.test('string date ISO 8601', function (t) {
+
+    t.test('string date ISO 8601', function (t) {
         t.plan(5);
 
         var schema = Enjoi({
@@ -325,21 +347,21 @@ Test('types', function (t) {
         Joi.validate('1akd2536', schema, function (error, value) {
             t.ok(error, "wrong date format.");
         });
-        
+
         Joi.validate('12-10-1900 UTC', schema, function (error, value) {
             t.ok(error, "minimum date.");
         });
-        
-       
-        
+
+
+
         Joi.validate(Date.now() + 1000000, schema, function (error, value) {
             t.ok(error, "maximum date.");
         });
-        
+
         Joi.validate('1-2-2015 UTC', schema, function (error, value) {
             t.ok(!error,  "good date.");
         });
-        
+
          Joi.validate('2005-01-01', schema, function (error, value) {
             t.ok(!error, "good date 2");
         });
@@ -384,12 +406,12 @@ Test('types', function (t) {
         Joi.validate('C', schema, function (error, value) {
             t.ok(error, 'error.');
         });
-        
+
         schema = Enjoi({
             type: 'string',
             'enum': ['A', 'B']
         });
-        
+
         Joi.validate('B', schema, function (error, value) {
             t.ok(!error, 'no error.');
         });
