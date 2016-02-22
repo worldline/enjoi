@@ -293,7 +293,7 @@ Test('types', function (t) {
     });
 
     t.test('string empty', function (t) {
-        t.plan(2);
+        t.plan(5);
 
         var schemaAllowingEmpty = Enjoi({
             'type': 'string',
@@ -304,6 +304,18 @@ Test('types', function (t) {
             t.ok(!error,  "Empty string allowed");
         });
 
+        [false, 'invalid', 1].forEach(function(value) {
+            var schemaDisallowingEmpty = Enjoi({
+                'type': 'string',
+                'allowEmptyValue': value
+            });
+
+            Joi.validate('', schemaDisallowingEmpty, function (error, value) {
+                t.ok(error,  "Empty string disallowed");
+            });
+        });
+
+
         var defaultStringSchema = Enjoi({
             'type': 'string'
         });
@@ -311,7 +323,6 @@ Test('types', function (t) {
         Joi.validate('', defaultStringSchema, function (error, value) {
             t.ok(error,  "Empty string disallowed");
         });
-
     });
 
     t.test('string email', function (t) {
